@@ -908,24 +908,51 @@ function getVal(id) {
 }
 function mtTable(tableEl, lang) {
   if (!tableEl) return '';
-  // Collect all .t spans inside thead for translation
-  const thead = tableEl.querySelector('thead');
-  const tbody = tableEl.querySelector('tbody');
-  // Clone and resolve language
-  const clone = tableEl.cloneNode(true);
-  clone.querySelectorAll('.t[data-vi][data-en]').forEach(el => {
-    el.textContent = el.getAttribute('data-' + lang);
+  // Read ALL input values from the LIVE DOM before anything else
+  const liveInputs = [...tableEl.querySelectorAll('input')];
+  const inputValues = liveInputs.map(i => i.value || '');
+
+  // Build thead
+  let theadHTML = '<thead>';
+  tableEl.querySelectorAll('thead tr').forEach(tr => {
+    theadHTML += '<tr>';
+    tr.querySelectorAll('th').forEach(th => {
+      const attrs = [];
+      if (th.classList.contains('lft')) attrs.push('class="lft"');
+      if (th.hasAttribute('colspan')) attrs.push('colspan="' + th.getAttribute('colspan') + '"');
+      if (th.hasAttribute('rowspan')) attrs.push('rowspan="' + th.getAttribute('rowspan') + '"');
+      const span = th.querySelector('.t[data-vi][data-en]');
+      const txt = span ? (span.getAttribute('data-' + lang) || span.textContent.trim()) : th.textContent.trim();
+      theadHTML += '<th ' + attrs.join(' ') + '>' + txt + '</th>';
+    });
+    theadHTML += '</tr>';
   });
-  // Replace inputs with values
-  clone.querySelectorAll('input').forEach(inp => {
-    const td = inp.closest('td');
-    if (td) td.innerHTML = `<span class="val">${inp.value||''}</span>`;
+  theadHTML += '</thead>';
+
+  // Build tbody injecting pre-read values
+  let inputIdx = 0;
+  let tbodyHTML = '<tbody>';
+  tableEl.querySelectorAll('tbody tr').forEach(tr => {
+    tbodyHTML += '<tr>';
+    tr.querySelectorAll('td').forEach(td => {
+      const cs = td.hasAttribute('colspan') ? ' colspan="' + td.getAttribute('colspan') + '"' : '';
+      if (td.classList.contains('pc')) {
+        const span = td.querySelector('.t[data-vi][data-en]');
+        const txt = span ? (span.getAttribute('data-' + lang) || span.textContent.trim()) : td.textContent.trim();
+        tbodyHTML += '<td class="pc"' + cs + '>' + txt + '</td>';
+      } else {
+        const numInputs = td.querySelectorAll('input').length;
+        const vals = numInputs > 0
+          ? Array.from({length: numInputs}, () => inputValues[inputIdx++] || '').join(' ')
+          : '';
+        tbodyHTML += '<td class="val"' + cs + '>' + vals + '</td>';
+      }
+    });
+    tbodyHTML += '</tr>';
   });
-  // Add class mt
-  clone.className = 'mt';
-  // Add val class to data cells
-  clone.querySelectorAll('tbody td:not(.pc)').forEach(td => td.classList.add('val'));
-  return clone.outerHTML;
+  tbodyHTML += '</tbody>';
+
+  return '<table class="mt">' + theadHTML + tbodyHTML + '</table>';
 }
 function obsChips(name, lang) {
   const checked = document.querySelector(`input[name="${name}"]:checked`)?.value || '';
@@ -1027,14 +1054,28 @@ function buildPDF(name) {
     const finalTbl = cards[4]?.querySelector('table.mt');
     const ebiTbl = cards[5]?.querySelector('table.ct');
 
-    // EBI clone
+    // EBI table - read values directly from live DOM
     let ebiHTML = '';
     if (ebiTbl) {
-      const ec = ebiTbl.cloneNode(true);
-      ec.querySelectorAll('.t[data-vi][data-en]').forEach(el=>el.textContent=el.getAttribute('data-'+lang));
-      ec.querySelectorAll('input').forEach(inp=>{const td=inp.closest('td');if(td)td.innerHTML=inp.value||'';});
-      ec.className='ct';
-      ebiHTML = ec.outerHTML;
+      const rows = [...ebiTbl.querySelectorAll('tbody tr')];
+      const hcols = vi
+        ? ['Loại','Số chai','Tổng vào','Tỉ lệ (%)']
+        : ['Type','Qty','Total in','Rate (%)'];
+      let et = '<table class="ct"><thead><tr>' + hcols.map(c=>'<th>'+c+'</th>').join('') + '</tr></thead><tbody>';
+      rows.forEach(tr => {
+        et += '<tr>';
+        tr.querySelectorAll('td').forEach((td, i) => {
+          const inp = td.querySelector('input');
+          const span = td.querySelector('.t[data-vi][data-en]');
+          let val = '';
+          if (inp) val = inp.value || '';
+          else if (span) val = span.getAttribute('data-' + lang) || span.textContent.trim();
+          else val = td.textContent.trim();
+          et += '<td' + (i===0 ? ' class="lft"' : '') + '>' + val + '</td>';
+        });
+        et += '</tr>';
+      });
+      ebiHTML = et + '</tbody></table>';
     }
 
     body = `
@@ -1100,33 +1141,55 @@ function exportPDF(name) {
   btn.innerHTML = '⏳ ' + (LANG==='vi' ? 'Đang tạo...' : 'Processing...');
   btn.disabled = true;
 
-  const htmlContent = buildPDF(name);
-  const fname = (name==='audit'?'Kersia_Audit':'Kersia_Service') + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+  // Build the PDF HTML string (reads all live DOM values right now)
+  const pdfHTML = buildPDF(name);
+  const fname = (name==='audit' ? 'Kersia_Audit' : 'Kersia_Service')
+    + '_' + new Date().toISOString().slice(0,10) + '.pdf';
 
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:297mm;height:210mm;border:none';
-  document.body.appendChild(iframe);
-  iframe.contentDocument.open();
-  iframe.contentDocument.write(htmlContent);
-  iframe.contentDocument.close();
+  // Mount into a hidden off-screen div so html2pdf can render it
+  const container = document.createElement('div');
+  container.style.cssText = [
+    'position:fixed', 'left:-9999px', 'top:0',
+    'width:1122px',   // A4 landscape ~297mm at 96dpi
+    'background:#fff',
+    'z-index:-1',
+    'pointer-events:none'
+  ].join(';');
+  container.innerHTML = pdfHTML;
+  document.body.appendChild(container);
 
-  setTimeout(() => {
-    html2pdf().set({
-      margin: [8, 8, 10, 8],
-      filename: fname,
-      image: { type: 'jpeg', quality: 0.97 },
-      html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 1122 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    }).from(iframe.contentDocument.body).save().then(() => {
-      document.body.removeChild(iframe);
-      btn.innerHTML = '✅ ' + (LANG==='vi' ? 'Hoàn thành!' : 'Done!');
-      setTimeout(() => { btn.innerHTML = origHTML; btn.disabled = false; }, 2500);
-    }).catch(err => {
-      document.body.removeChild(iframe);
-      btn.innerHTML = origHTML; btn.disabled = false;
-      alert('Error: ' + err.message);
-    });
-  }, 600);
+  // Give the browser one frame to paint, then capture
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      html2pdf().set({
+        margin: [8, 8, 10, 8],
+        filename: fname,
+        image: { type: 'jpeg', quality: 0.97 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          windowWidth: 1122,
+          scrollX: 0,
+          scrollY: 0
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      })
+      .from(container)
+      .save()
+      .then(() => {
+        document.body.removeChild(container);
+        btn.innerHTML = '✅ ' + (LANG==='vi' ? 'Hoàn thành!' : 'Done!');
+        setTimeout(() => { btn.innerHTML = origHTML; btn.disabled = false; }, 2500);
+      })
+      .catch(err => {
+        document.body.removeChild(container);
+        btn.innerHTML = origHTML;
+        btn.disabled = false;
+        alert('PDF error: ' + err.message);
+      });
+    }, 400);
+  });
 }
 </script>
 </body>
