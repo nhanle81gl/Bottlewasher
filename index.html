@@ -179,7 +179,7 @@ main{max-width:1280px;margin:0 auto;padding:20px 18px 50px}
         </div>
       </div>
       <div class="g6">
-        <div class="fd"><label data-vi="Dây chuyền # / Line" data-en="Line #">Dây chuyền #</label><input type="text"></div>
+        <div class="fd"><label data-vi="Dây chuyền # / Line" data-en="Line #">Line #</label><input type="text"></div>
         <div class="fd s2"><label data-vi="Hiệu máy / Washer model" data-en="Washer model">Hiệu máy rửa chai</label><input type="text"></div>
         <div class="fd"><label data-vi="Công suất (chai/giờ)" data-en="Capacity (btl/hr)">Công suất (chai/giờ)</label><input type="text"></div>
         <div class="fd"><label data-vi="Loại chai / Bottle type" data-en="Bottle type">Loại chai</label><input type="text"></div>
@@ -392,7 +392,7 @@ main{max-width:1280px;margin:0 auto;padding:20px 18px 50px}
       <div class="g6">
         <div class="fd s2"><label data-vi="Đại diện Kersia – Technical Mgr" data-en="Kersia Technical Manager">Đại diện Kersia – Technical Mgr</label><input type="text"></div>
         <div class="fd s2"><label data-vi="Kỹ thuật viên / Technician" data-en="Kersia Technician">Kỹ thuật viên Kersia</label><input type="text"></div>
-        <div class="fd"><label data-vi="Dây chuyền # / Line" data-en="Line #">Dây chuyền #</label><input type="text"></div>
+        <div class="fd"><label data-vi="Dây chuyền # / Line" data-en="Line #">Line #</label><input type="text"></div>
         <div class="fd"><label data-vi="Tình trạng / Status" data-en="Status">Tình trạng</label>
           <select><option data-vi="Đang sử dụng" data-en="In operation">Đang sử dụng</option><option data-vi="Bảo trì" data-en="Maintenance">Bảo trì</option></select>
         </div>
@@ -601,7 +601,7 @@ main{max-width:1280px;margin:0 auto;padding:20px 18px 50px}
           <tr>
             <td colspan="7" style="padding:6px 8px;background:var(--g0)">
               <button type="button" onclick="addConsRow()" style="background:var(--g6);color:#fff;border:none;border-radius:4px;padding:4px 12px;font-size:11.5px;font-weight:700;cursor:pointer">
-                + <span data-vi="Thêm dây chuyền" data-en="Add line">Thêm dây chuyền</span>
+                + <span data-vi="Thêm dây chuyền" data-en="Add line">Thêm Line </span>
               </button>
             </td>
           </tr>
@@ -724,8 +724,8 @@ function calcDm(rowId) {
 document.addEventListener('DOMContentLoaded',()=>{
   addConsRow(); addConsRow();
   const rows=document.querySelectorAll('#cons-tbody tr');
-  if(rows[0]) rows[0].querySelector('input[type=text]').value='Dây chuyền 1';
-  if(rows[1]) rows[1].querySelector('input[type=text]').value='Dây chuyền 2';
+  if(rows[0]) rows[0].querySelector('input[type=text]').value='Line 1';
+  if(rows[1]) rows[1].querySelector('input[type=text]').value='Line 2';
 });
 
 // ===== EXPORT PDF =====
