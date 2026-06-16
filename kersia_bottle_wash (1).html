@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kersia – Bottle Washing Forms</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --g9:#0a3622;--g8:#145232;--g7:#1a6b40;--g6:#22883c;--g5:#2ea84d;--g4:#4fc86b;
+  --g1:#d6f0dd;--g0:#f0faf3;--gray:#6b7570;--grayL:#c8d0cc;--grayLL:#f2f5f3;
+  --blue:#1a3a6b;--w:#fff;--r:5px;--sh:0 2px 10px rgba(10,54,34,0.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--grayLL);color:#1a1f1c;font-size:13px;line-height:1.4;min-height:100vh}
+
+/* HEADER */
+header{background:linear-gradient(135deg,var(--g9),var(--g7));color:var(--w);box-shadow:0 4px 16px rgba(10,54,34,0.3);position:sticky;top:0;z-index:100}
+.hdr{display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;padding:10px 24px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-ic{width:40px;height:40px;background:var(--g4);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--g9)}
+.logo-nm{font-size:20px;font-weight:900;letter-spacing:2px}
+.logo-sub{font-size:9px;color:var(--g1);letter-spacing:3px;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:16px}
+.lang-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--g4);background:transparent;color:var(--g1);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.lang-btn.active{background:var(--g4);color:var(--g9)}
+.lang-btn:hover:not(.active){background:rgba(79,200,107,0.15)}
+
+/* TABS */
+.tabs{background:var(--g8);display:flex;justify-content:center;border-bottom:3px solid var(--g9)}
+.tab-btn{padding:11px 32px;background:transparent;border:none;cursor:pointer;font-size:12.5px;font-weight:700;letter-spacing:.5px;color:var(--g1);border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;display:flex;align-items:center;gap:7px}
+.tab-btn:hover{color:var(--w);background:rgba(255,255,255,0.07)}
+.tab-btn.active{color:var(--w);border-bottom-color:var(--g4);background:rgba(255,255,255,0.1)}
+
+/* MAIN */
+main{max-width:1280px;margin:0 auto;padding:20px 18px 50px}
+.page{display:none}.page.active{display:block}
+
+/* ACTION BAR */
+.action-bar{display:flex;gap:10px;justify-content:flex-end;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.btn{padding:9px 20px;border-radius:var(--r);border:none;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.btn-pdf{background:linear-gradient(135deg,var(--blue),#2563c0);color:var(--w);box-shadow:0 3px 10px rgba(26,58,107,0.3)}
+.btn-pdf:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(26,58,107,0.4)}
+.btn-clear{background:var(--w);color:var(--g7);border:1.5px solid var(--g5)}
+.btn-clear:hover{background:var(--g0)}
+
+/* ===== COMPACT FORM ===== */
+.cf{background:var(--w);border-radius:8px;box-shadow:var(--sh);overflow:hidden;margin-bottom:12px}
+.cf-hd{background:linear-gradient(90deg,var(--g7),var(--g6));color:var(--w);padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.cf-hd .sn{background:rgba(255,255,255,0.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.cf-bd{padding:12px 16px}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
+
+.fd{display:flex;flex-direction:column;gap:3px}
+.fd label{font-size:10px;font-weight:700;color:var(--g8);text-transform:uppercase;letter-spacing:.4px}
+.fd input,.fd select,.fd textarea{border:1.5px solid var(--grayL);border-radius:var(--r);padding:6px 8px;font-size:12px;color:#1a1f1c;background:var(--g0);transition:border-color .15s;width:100%}
+.fd input:focus,.fd select:focus,.fd textarea:focus{outline:none;border-color:var(--g5);box-shadow:0 0 0 2px rgba(46,168,77,0.15);background:var(--w)}
+.fd textarea{min-height:52px;resize:vertical}
+
+/* MEASUREMENT TABLE */
+.mt{width:100%;border-collapse:collapse;font-size:11.5px}
+.mt th,.mt td{border:1px solid var(--grayL);padding:5px 7px;text-align:center}
+.mt th{background:var(--g7);color:var(--w);font-weight:600;font-size:10.5px;letter-spacing:.2px}
+.mt th.lft{text-align:left}
+.mt td.pc{text-align:left;background:var(--g0);font-weight:500;color:var(--g8);font-size:11px;white-space:nowrap}
+.mt tr:nth-child(even) td.pc{background:#e8f5eb}
+.mt input{border:none;background:transparent;text-align:center;width:100%;padding:1px 3px;font-size:11.5px}
+.mt input:focus{outline:1px solid var(--g4);border-radius:2px}
+
+/* RADIO / CHECK */
+.rc{display:flex;gap:14px;flex-wrap:wrap;padding:6px 0}
+.rc label{display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;color:#374040}
+.rc input[type=radio],.rc input[type=checkbox]{accent-color:var(--g6);width:14px;height:14px}
+
+/* SIG */
+.sig{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:var(--g0);border-radius:var(--r);border:1.5px solid var(--grayL);padding:14px}
+.sig-b h4{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g8);border-bottom:2px solid var(--g5);padding-bottom:5px;margin-bottom:10px}
+.sig-line{border-top:1px dashed var(--gray);margin-top:28px}
+.sig-lbl{font-size:10px;color:var(--gray);margin-top:3px}
+
+/* CONS TABLE */
+.ct{width:100%;border-collapse:collapse;font-size:12px}
+.ct th,.ct td{border:1px solid var(--grayL);padding:6px 8px}
+.ct th{background:var(--g7);color:var(--w);font-size:11px;font-weight:700}
+.ct td{background:var(--w)}
+.ct tr:nth-child(even) td{background:var(--g0)}
+.ct input{border:none;background:transparent;width:100%;font-size:12px}
+.ct input:focus{outline:1px solid var(--g4);border-radius:2px}
+.dm-result{text-align:center;font-size:12.5px;font-weight:800;color:var(--blue);background:#e8eef8!important}
+
+/* BADGE */
+.badge{background:var(--g1);color:var(--g8);border:1px solid var(--g4);border-radius:16px;padding:3px 12px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+/* PAGE TITLE */
+.ptitle{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.ptitle h2{font-size:19px;font-weight:800;color:var(--g9)}
+.ptitle p{font-size:11.5px;color:var(--gray);margin-top:2px}
+
+/* ===== PDF PRINT STYLES ===== */
+@media print{
+  header,.tabs,.action-bar,.lang-switch{display:none!important}
+  body{background:white;font-size:10px}
+  .page{display:block!important}
+  .cf{box-shadow:none;border:1px solid #bbb;margin-bottom:6px}
+  .cf-bd{padding:7px 10px}
+  .cf-hd{padding:5px 10px;font-size:10px}
+  .fd input,.fd select,.fd textarea{font-size:10px;padding:3px 5px}
+  .mt th,.mt td{padding:3px 5px;font-size:9.5px}
+  .g3,.g4,.g5,.g6{gap:6px}
+  .fd textarea{min-height:35px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-ic">K</div>
+      <div>
+        <div class="logo-nm">KERSIA</div>
+        <div class="logo-sub">South East Asia</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div style="font-size:11px;color:var(--g1);text-align:right">
+        <strong style="display:block;font-size:13px;color:#fff" data-vi="Hệ thống quản lý rửa chai" data-en="Bottle Washing Management System">Hệ thống quản lý rửa chai</strong>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="lang-btn active" onclick="setLang('vi')" id="btn-vi">VI</button>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('audit')" id="tab-audit">
+    🏭 <span data-vi="Audit Nhà Máy Mới" data-en="New Factory Audit">Audit Nhà Máy Mới</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('service')" id="tab-service">
+    🔧 <span data-vi="Báo Cáo Dịch Vụ" data-en="Service Report">Báo Cáo Dịch Vụ</span>
+  </button>
+</div>
+
+<main>
+
+<!-- =================== AUDIT PAGE =================== -->
+<div class="page active" id="page-audit">
+  <div class="ptitle">
+    <div>
+      <h2 data-vi="Bottle Washing Audit Form" data-en="Bottle Washing Audit Form">Bottle Washing Audit Form</h2>
+      <p data-vi="Biểu mẫu kiểm tra máy rửa chai – Nhà máy mới" data-en="Bottle washer inspection form – New factory">Biểu mẫu kiểm tra máy rửa chai – Nhà máy mới</p>
+    </div>
+    <span class="badge" data-vi="🏭 Audit Nhà Máy" data-en="🏭 Factory Audit">🏭 Audit Nhà Máy</span>
+  </div>
+  <div class="action-bar">
+    <button class="btn btn-clear" onclick="clearForm('audit')">🗑 <span data-vi="Xóa Form" data-en="Clear Form">Xóa Form</span></button>
+    <button class="btn btn-pdf" onclick="exportPDF('audit')">📄 <span data-vi="Xuất PDF – Audit" data-en="Export PDF – Audit">Xuất PDF – Audit</span></button>
+  </div>
+
+  <!-- 1. THÔNG TIN CHUNG -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">1</span> <span data-vi="Thông Tin Chung" data-en="General Information">Thông Tin Chung</span></div>
+    <div class="cf-bd">
+      <div class="g6" style="margin-bottom:8px">
+        <div class="fd s2"><label data-vi="Khách hàng / Customer" data-en="Customer">Khách hàng / Customer</label><input type="text"></div>
+        <div class="fd s2"><label data-vi="Địa điểm / Location" data-en="Location">Địa điểm / Location</label><input type="text"></div>
+        <div class="fd"><label data-vi="Ngày / Date" data-en="Date">Ngày / Date</label><input type="date"></div>
+        <div class="fd"><label data-vi="Tình trạng / Status" data-en="Status">Tình trạng</label>
+          <select><option data-vi="Đang sử dụng" data-en="In operation">Đang sử dụng</option><option data-vi="Chưa vận hành" data-en="Not yet running">Chưa vận hành</option></select>
+        </div>
+      </div>
+      <div class="g6">
+        <div class="fd"><label data-vi="Dây chuyền # / Line" data-en="Line #">Dây chuyền #</label><input type="text"></div>
+        <div class="fd s2"><label data-vi="Hiệu máy / Washer model" data-en="Washer model">Hiệu máy rửa chai</label><input type="text"></div>
+        <div class="fd"><label data-vi="Công suất (chai/giờ)" data-en="Capacity (btl/hr)">Công suất (chai/giờ)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Loại chai / Bottle type" data-en="Bottle type">Loại chai</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nhãn / Label" data-en="Label">Nhãn</label><input type="text"></div>
+      </div>
+      <div class="g6" style="margin-top:8px">
+        <div class="fd"><label data-vi="Số chai/hàng" data-en="Btl/row">Số chai/hàng</label><input type="text"></div>
+        <div class="fd"><label data-vi="Thu hồi xút" data-en="NaOH recovery">Thu hồi xút</label>
+          <select><option>--</option><option data-vi="Có" data-en="Yes">Có</option><option data-vi="Không" data-en="No">Không</option></select>
+        </div>
+        <div class="fd"><label data-vi="Tần suất xả xút (giờ)" data-en="Dump freq. (hrs)">Tần suất xả xút (giờ)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Châm xút / Dosing" data-en="Dosing method">Châm xút</label>
+          <select><option>--</option><option data-vi="Bằng tay" data-en="Manual">Bằng tay</option><option data-vi="Tự động" data-en="Automatic">Tự động</option></select>
+        </div>
+        <div class="fd"><label data-vi="Giờ vào / Time in" data-en="Time in">Giờ vào</label><input type="datetime-local"></div>
+        <div class="fd"><label data-vi="Giờ ra / Time out" data-en="Time out">Giờ ra</label><input type="datetime-local"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. KHOANG TRÁNG SƠ BỘ -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">2</span> <span data-vi="Khoang Tráng Sơ Bộ / Pre-rinse Zones" data-en="Pre-rinse Zones">Khoang Tráng Sơ Bộ / Pre-rinse Zones</span></div>
+    <div class="cf-bd">
+      <table class="mt">
+        <thead>
+          <tr>
+            <th class="lft" style="width:26%" data-vi="Thông số / Parameter" data-en="Parameter">Thông số / Parameter</th>
+            <th colspan="2" data-vi="Khoang 1 / Zone 1" data-en="Zone 1">Khoang 1</th>
+            <th colspan="2" data-vi="Khoang 2 / Zone 2" data-en="Zone 2">Khoang 2</th>
+            <th colspan="2" data-vi="Khoang 3 / Zone 3" data-en="Zone 3">Khoang 3</th>
+            <th colspan="2" data-vi="Khoang 4 / Zone 4" data-en="Zone 4">Khoang 4</th>
+          </tr>
+          <tr>
+            <th class="lft"></th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pc" data-vi="Nhiệt độ (°C)" data-en="Temperature (°C)">Nhiệt độ (°C)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Áp lực (Bar)" data-en="Pressure (Bar)">Áp lực (Bar)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. KHOANG XÚT -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">3</span> <span data-vi="Khoang Xút & Chất Phụ Gia / Caustic Zones & Additive" data-en="Caustic Zones & Additive">Khoang Xút & Chất Phụ Gia</span></div>
+    <div class="cf-bd">
+      <table class="mt" style="margin-bottom:8px">
+        <thead>
+          <tr>
+            <th class="lft" style="width:26%">Parameter</th>
+            <th colspan="2">Khoang 1</th><th colspan="2">Khoang 2</th><th colspan="2">Khoang 3</th><th colspan="2">Khoang 4</th>
+          </tr>
+          <tr>
+            <th class="lft"></th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pc" data-vi="Nồng độ xút % (tự do/tổng)" data-en="NaOH conc. % (free/total)">Nồng độ xút % (tự do/tổng)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Nhôm (%)" data-en="Aluminium (%)">Nhôm (%)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Độ dẫn điện (ms)" data-en="Conductivity (ms)">Độ dẫn điện (ms)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Nhiệt độ (°C)" data-en="Temperature (°C)">Nhiệt độ (°C)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Thời gian hoạt động (ca-8h)" data-en="Operation time (shift-8h)">Thời gian hoạt động (ca-8h)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Tình trạng (trong/đục)" data-en="Condition (clear/turbid)">Tình trạng (trong/đục)</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+          <tr><td class="pc" data-vi="Áp lực vòi phun (Bar)" data-en="Spray pressure (Bar)">Áp lực vòi phun (Bar)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+        </tbody>
+      </table>
+      <div class="g5">
+        <div class="fd"><label data-vi="Lưu lượng bơm (l/g)" data-en="Pump flow (l/h)">Lưu lượng bơm (l/g)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Cài đặt bơm (% công suất)" data-en="Pump setting (% cap.)">Cài đặt bơm (%)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Số hàng chai/1 lần bơm" data-en="Rows/dose">Số hàng/1 lần bơm</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nồng độ phụ gia thực tế (%)" data-en="Additive conc. actual (%)">Nồng độ phụ gia thực tế (%)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nồng độ khuyến cáo (%)" data-en="Recommended conc. (%)">Nồng độ khuyến cáo (%)</label><input type="text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. KHOANG TRÁNG CUỐI -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">4</span> <span data-vi="Khoang Tráng Cuối / Final Rinse Zones" data-en="Final Rinse Zones">Khoang Tráng Cuối / Final Rinse</span></div>
+    <div class="cf-bd">
+      <table class="mt">
+        <thead>
+          <tr>
+            <th class="lft" style="width:26%">Parameter</th>
+            <th colspan="2" data-vi="Khoang nước cuối" data-en="Final water">Khoang nước cuối</th>
+            <th colspan="2" data-vi="Khoang nhiễm xút" data-en="Caustic carryover">Khoang nhiễm xút</th>
+            <th colspan="2" data-vi="Khoang nước nóng" data-en="Hot water">Khoang nước nóng</th>
+            <th colspan="2" data-vi="Khoang nước ấm" data-en="Warm water">Khoang nước ấm</th>
+          </tr>
+          <tr>
+            <th class="lft"></th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pc" data-vi="Nhiệt độ (°C)" data-en="Temperature (°C)">Nhiệt độ (°C)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Áp lực (Bar)" data-en="Pressure (Bar)">Áp lực (Bar)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Vòi phun (HĐ/nghẽn)" data-en="Nozzles (OK/blocked)">Vòi phun (HĐ/nghẽn)</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+          <tr><td class="pc" data-vi="Vòi phun thẳng hàng (C/K)" data-en="Nozzles aligned (Y/N)">Vòi phun thẳng hàng (C/K)</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. KẾT QUẢ + NHẬN XÉT + CHỮ KÝ -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">5</span> <span data-vi="Kết Quả & Nhận Xét & Chữ Ký" data-en="Results & Comments & Signatures">Kết Quả & Nhận Xét & Chữ Ký</span></div>
+    <div class="cf-bd">
+      <div class="g6" style="margin-bottom:10px">
+        <div class="fd"><label data-vi="Methylene (% đạt)" data-en="Methylene test (% pass)">Methylene (% đạt)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nhiễm xút (% đạt)" data-en="Caustic contam. (% pass)">Nhiễm xút (% đạt)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Chai nứt/sốc nhiệt" data-en="Cracked/thermal shock">Chai nứt/sốc nhiệt</label><input type="text"></div>
+        <div class="fd"><label data-vi="Chai rỉ sét" data-en="Rusty bottles">Chai rỉ sét</label><input type="text"></div>
+        <div class="fd"><label data-vi="Tỉ lệ chai loại (bq 2T)" data-en="Rejection rate (avg 2m)">Tỉ lệ chai loại (bq 2T)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Định mức HC (kg/1000L)" data-en="Chemical usage (kg/1000L)">Định mức HC (kg/1000L)</label><input type="text"></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:700;color:var(--g8);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px" data-vi="Quan sát chai sau máy rửa / Bottle observation after washer" data-en="Bottle observation after washer">Quan sát chai sau máy rửa</label>
+        <div class="rc">
+          <label><input type="radio" name="obs_a" value="tot"> ✅ <span data-vi="Tốt / Good" data-en="Good">Tốt</span></label>
+          <label><input type="radio" name="obs_a" value="duoc"> ⚠️ <span data-vi="Được / Fair" data-en="Fair">Được</span></label>
+          <label><input type="radio" name="obs_a" value="kem"> ❌ <span data-vi="Kém / Poor" data-en="Poor">Kém</span></label>
+        </div>
+      </div>
+      <div class="g2" style="margin-bottom:12px">
+        <div class="fd"><label data-vi="Nhận xét / Comments" data-en="Comments">Nhận xét / Comments</label><textarea></textarea></div>
+        <div class="fd"><label data-vi="Đề nghị / Recommendations" data-en="Recommendations">Đề nghị / Recommendations</label><textarea></textarea></div>
+      </div>
+      <div class="sig">
+        <div class="sig-b">
+          <h4 data-vi="🔬 Kersia Representative" data-en="🔬 Kersia Representative">🔬 Kersia Representative</h4>
+          <div class="g2">
+            <div class="fd"><label data-vi="Họ tên / Name" data-en="Name">Họ tên</label><input type="text"></div>
+            <div class="fd"><label data-vi="Ngày / Date" data-en="Date">Ngày</label><input type="date"></div>
+          </div>
+          <div class="sig-line"></div><div class="sig-lbl" data-vi="Chữ ký / Signature" data-en="Signature">Chữ ký / Signature</div>
+        </div>
+        <div class="sig-b">
+          <h4 data-vi="🏭 Client Signature" data-en="🏭 Client Signature">🏭 Client Signature</h4>
+          <div class="g2">
+            <div class="fd"><label data-vi="Họ tên / Name" data-en="Name">Họ tên</label><input type="text"></div>
+            <div class="fd"><label data-vi="Ngày / Date" data-en="Date">Ngày</label><input type="date"></div>
+          </div>
+          <div class="sig-line"></div><div class="sig-lbl" data-vi="Chữ ký / Signature" data-en="Signature">Chữ ký / Signature</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end audit -->
+
+
+<!-- =================== SERVICE PAGE =================== -->
+<div class="page" id="page-service">
+  <div class="ptitle">
+    <div>
+      <h2 data-vi="Bottle Washing Service Report" data-en="Bottle Washing Service Report">Bottle Washing Service Report</h2>
+      <p data-vi="Báo cáo dịch vụ máy rửa chai – Khách hàng hiện tại" data-en="Bottle washer service report – Existing customer">Báo cáo dịch vụ máy rửa chai – Khách hàng hiện tại</p>
+    </div>
+    <span class="badge" data-vi="🔧 Service Report" data-en="🔧 Service Report">🔧 Service Report</span>
+  </div>
+  <div class="action-bar">
+    <button class="btn btn-clear" onclick="clearForm('service')">🗑 <span data-vi="Xóa Form" data-en="Clear Form">Xóa Form</span></button>
+    <button class="btn btn-pdf" onclick="exportPDF('service')">📄 <span data-vi="Xuất PDF – Service" data-en="Export PDF – Service">Xuất PDF – Service</span></button>
+  </div>
+
+  <!-- 1. THÔNG TIN CHUNG -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">1</span> <span data-vi="Thông Tin Chung / General Information" data-en="General Information">Thông Tin Chung</span></div>
+    <div class="cf-bd">
+      <div class="g6" style="margin-bottom:8px">
+        <div class="fd s2"><label data-vi="Khách hàng / Customer" data-en="Customer">Khách hàng / Customer</label><input type="text"></div>
+        <div class="fd s2"><label data-vi="Địa chỉ / Address" data-en="Address">Địa chỉ / Address</label><input type="text"></div>
+        <div class="fd"><label data-vi="Ngày thăm / Visit date" data-en="Visit date">Ngày thăm</label><input type="date"></div>
+        <div class="fd"><label data-vi="Mục đích / Purpose" data-en="Purpose">Mục đích</label><input type="text" data-vi="Hỗ trợ kỹ thuật" data-en="Technical support" placeholder="Hỗ trợ kỹ thuật"></div>
+      </div>
+      <div class="g6" style="margin-bottom:8px">
+        <div class="fd s2"><label data-vi="Người liên lạc / Contact" data-en="Contact person">Người liên lạc / Packaging Mgr</label><input type="text"></div>
+        <div class="fd"><label data-vi="Chức vụ / Position" data-en="Position">Chức vụ</label><input type="text"></div>
+        <div class="fd"><label data-vi="Điện thoại / Tel" data-en="Tel">Điện thoại</label><input type="text"></div>
+        <div class="fd"><label data-vi="Giờ vào / Time in" data-en="Time in">Giờ vào</label><input type="time"></div>
+        <div class="fd"><label data-vi="Giờ ra / Time out" data-en="Time out">Giờ ra</label><input type="time"></div>
+      </div>
+      <div class="g6">
+        <div class="fd s2"><label data-vi="Đại diện Kersia – Technical Mgr" data-en="Kersia Technical Manager">Đại diện Kersia – Technical Mgr</label><input type="text"></div>
+        <div class="fd s2"><label data-vi="Kỹ thuật viên / Technician" data-en="Kersia Technician">Kỹ thuật viên Kersia</label><input type="text"></div>
+        <div class="fd"><label data-vi="Dây chuyền # / Line" data-en="Line #">Dây chuyền #</label><input type="text"></div>
+        <div class="fd"><label data-vi="Tình trạng / Status" data-en="Status">Tình trạng</label>
+          <select><option data-vi="Đang sử dụng" data-en="In operation">Đang sử dụng</option><option data-vi="Bảo trì" data-en="Maintenance">Bảo trì</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. TỔNG QUAN MÁY -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">2</span> <span data-vi="Tổng Quan Máy Rửa / Machine Overview" data-en="Machine Overview">Tổng Quan Máy Rửa</span></div>
+    <div class="cf-bd">
+      <div class="g6">
+        <div class="fd s2"><label data-vi="Hiệu máy / Washer model" data-en="Washer model">Hiệu máy rửa chai</label><input type="text"></div>
+        <div class="fd"><label data-vi="Năm SX / Year" data-en="Year">Năm sản xuất</label><input type="text"></div>
+        <div class="fd"><label data-vi="Tốc độ (chai/giờ)" data-en="Speed (btl/hr)">Tốc độ (chai/giờ)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Số máy rửa" data-en="No. of washers">Số máy rửa</label><input type="text"></div>
+        <div class="fd"><label data-vi="Loại máy" data-en="Machine type">Loại máy</label>
+          <select><option>--</option><option>Single end</option><option>Double end</option></select>
+        </div>
+        <div class="fd"><label data-vi="Loại chai" data-en="Bottle type">Loại chai</label><input type="text" placeholder="355ml, 450ml..."></div>
+        <div class="fd"><label data-vi="Nhãn / Label" data-en="Label">Nhãn</label>
+          <select><option>--</option><option data-vi="Giấy" data-en="Paper">Giấy</option><option data-vi="Foil nhôm" data-en="Alu foil">Foil nhôm</option><option data-vi="Kim loại" data-en="Metal">Kim loại</option></select>
+        </div>
+        <div class="fd"><label data-vi="# rọ/hàng chai" data-en="Carriers/row"># rọ/hàng chai</label><input type="text"></div>
+        <div class="fd"><label data-vi="Thu hồi NaOH" data-en="NaOH recovery">Thu hồi NaOH</label>
+          <select><option>--</option><option data-vi="Có" data-en="Yes">Có</option><option data-vi="Không" data-en="No">Không</option></select>
+        </div>
+        <div class="fd"><label data-vi="Tần xuất xả xút" data-en="Dump frequency">Tần xuất xả xút</label><input type="text"></div>
+        <div class="fd"><label data-vi="SL bia (tr.lít/năm)" data-en="Beer vol (m.L/yr)">SL bia (tr.lít/năm)</label><input type="text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. KHOANG TRÁNG SƠ BỘ -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">3</span> <span data-vi="Khoang Tráng Sơ Bộ / Pre-rinse" data-en="Pre-rinse Zones">Khoang Tráng Sơ Bộ / Pre-rinse</span></div>
+    <div class="cf-bd">
+      <table class="mt">
+        <thead>
+          <tr>
+            <th class="lft" style="width:24%">Parameter</th>
+            <th colspan="2">Khoang 1</th><th colspan="2">Khoang 2</th><th colspan="2">Khoang 3</th><th colspan="2">Khoang 4</th>
+          </tr>
+          <tr>
+            <th class="lft"></th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pc" data-vi="Nhiệt độ (°C)" data-en="Temp (°C)">Nhiệt độ (°C)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Áp lực (PSI)" data-en="Pressure (PSI)">Áp lực (PSI)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Nguồn nước cấp" data-en="Water source">Nguồn nước cấp</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. KHOANG XÚT -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">4</span> <span data-vi="Khoang Xút / Caustic Zones" data-en="Caustic Zones">Khoang Xút / Caustic Zones</span></div>
+    <div class="cf-bd">
+      <table class="mt" style="margin-bottom:8px">
+        <thead>
+          <tr>
+            <th class="lft" style="width:24%">Parameter</th>
+            <th colspan="2">Khoang 1</th><th colspan="2">Khoang 2</th><th colspan="2">Khoang 3</th><th colspan="2">Khoang 4</th>
+          </tr>
+          <tr>
+            <th class="lft"></th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pc" data-vi="Nồng độ xút % (tự do/tổng)" data-en="NaOH % (free/total)">Nồng độ xút % (tự do/tổng)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Nhôm (%)" data-en="Aluminium (%)">Nhôm (%)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Độ dẫn điện (ms)" data-en="Conductivity (ms)">Độ dẫn điện (ms)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Nhiệt độ (°C)" data-en="Temperature (°C)">Nhiệt độ (°C)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Chất phụ gia (%)" data-en="Additive (%)">Chất phụ gia (%)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Áp lực (PSI)" data-en="Pressure (PSI)">Áp lực (PSI)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Độ trong (Trong/TB/Đục)" data-en="Clarity (Clear/Med/Turbid)">Độ trong (Trong/TB/Đục)</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+        </tbody>
+      </table>
+      <div class="g5">
+        <div class="fd"><label data-vi="Lưu lượng bơm (l/g)" data-en="Pump flow (l/h)">Lưu lượng bơm (l/g)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Cài đặt bơm (%)" data-en="Pump setting (%)">Cài đặt bơm (%)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nồng độ Mix KTA thực tế (%)" data-en="Mix KTA conc. actual (%)">Nồng độ Mix KTA thực tế (%)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nồng độ khuyến cáo (%) 0.1–0.4" data-en="Recommended (%) 0.1–0.4">Nồng độ khuyến cáo (%)</label><input type="text" placeholder="0.1–0.4"></div>
+        <div class="fd"><label data-vi="SL dùng xút BQ 3 ngày (kg/L)" data-en="NaOH avg usage 3d (kg/L)">SL xút BQ 3 ngày (kg/L)</label><input type="text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. KHOANG TRÁNG CUỐI -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">5</span> <span data-vi="Khoang Tráng Cuối / Final Rinse" data-en="Final Rinse Zones">Khoang Tráng Cuối / Final Rinse</span></div>
+    <div class="cf-bd">
+      <table class="mt">
+        <thead>
+          <tr>
+            <th class="lft" style="width:24%">Parameter</th>
+            <th colspan="2" data-vi="Khoang nước cuối" data-en="Final water">Khoang nước cuối</th>
+            <th colspan="2" data-vi="Khoang nhiễm xút" data-en="Caustic carryover">Khoang nhiễm xút</th>
+            <th colspan="2" data-vi="Khoang nước nóng" data-en="Hot water">Khoang nước nóng</th>
+            <th colspan="2" data-vi="Khoang nước ấm" data-en="Warm water">Khoang nước ấm</th>
+          </tr>
+          <tr>
+            <th class="lft"></th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+            <th data-vi="Cài đặt" data-en="Set">Cài đặt</th><th data-vi="Thực tế" data-en="Actual">Thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pc" data-vi="Nhiệt độ (°C)" data-en="Temp (°C)">Nhiệt độ (°C)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Áp lực (PSI)" data-en="Pressure (PSI)">Áp lực (PSI)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Độ cứng (ppm)" data-en="Hardness (ppm)">Độ cứng (ppm)</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc">pH</td>
+            <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td class="pc" data-vi="Vòi phun (HĐ/nghẽn)" data-en="Nozzles (OK/blocked)">Vòi phun (HĐ/nghẽn)</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+          <tr><td class="pc" data-vi="Vòi phun thẳng hàng (C/K)" data-en="Nozzles aligned (Y/N)">Vòi phun thẳng hàng (C/K)</td>
+            <td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td><td colspan="2"><input style="width:100%"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6. KẾT QUẢ + TIÊU THỤ -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">6</span> <span data-vi="Kết Quả Tẩy Rửa & EBI" data-en="Washing Results & EBI">Kết Quả Tẩy Rửa & EBI</span></div>
+    <div class="cf-bd">
+      <div class="g6" style="margin-bottom:10px">
+        <div class="fd"><label data-vi="Methylene xanh (% đạt)" data-en="Methylene blue (% pass)">Methylene xanh (% đạt)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Nhiễm xút (% đạt)" data-en="Caustic contam. (% pass)">Nhiễm xút (% đạt)</label><input type="text"></div>
+        <div class="fd"><label data-vi="Chai nứt/sốc nhiệt" data-en="Cracked/thermal shock">Chai nứt/sốc nhiệt</label><input type="text"></div>
+        <div class="fd"><label data-vi="Vòng rỉ sét" data-en="Rust rings">Vòng rỉ sét</label><input type="text"></div>
+        <div class="fd"><label data-vi="Tỉ lệ chai loại (%)" data-en="Rejection rate (%)">Tỉ lệ chai loại (%)</label><input type="text"></div>
+        <div class="fd">
+          <label data-vi="Quan sát chai sau rửa" data-en="Bottle condition after wash">Quan sát chai sau rửa</label>
+          <div class="rc" style="padding:4px 0">
+            <label><input type="radio" name="obs_s" value="tot"> ✅ <span data-vi="Tốt" data-en="Good">Tốt</span></label>
+            <label><input type="radio" name="obs_s" value="duoc"> ⚠️ <span data-vi="Được" data-en="Fair">Được</span></label>
+            <label><input type="radio" name="obs_s" value="kem"> ❌ <span data-vi="Kém" data-en="Poor">Kém</span></label>
+          </div>
+        </div>
+      </div>
+      <!-- EBI compact -->
+      <table class="ct" style="margin-bottom:8px">
+        <thead>
+          <tr>
+            <th data-vi="Loại chai loại / Rejection type" data-en="Rejection type">Loại chai loại</th>
+            <th data-vi="Số chai / Qty" data-en="Qty">Số chai</th>
+            <th data-vi="Tổng chai vào / Total in" data-en="Total in">Tổng chai vào</th>
+            <th data-vi="Tỉ lệ / Rate (%)" data-en="Rate (%)">Tỉ lệ (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td data-vi="Tổng chai loại / Total rejected" data-en="Total rejected">Tổng chai loại</td><td><input></td><td><input></td><td><input></td></tr>
+          <tr><td data-vi="Đáy chai / Bottom" data-en="Bottom">Đáy chai</td><td><input></td><td></td><td></td></tr>
+          <tr><td data-vi="Thành chai 1 / Side 1" data-en="Side 1">Thành chai 1</td><td><input></td><td></td><td></td></tr>
+          <tr><td data-vi="Thành chai 2 / Side 2" data-en="Side 2">Thành chai 2</td><td><input></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 7. TIÊU THỤ HÓA CHẤT -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">7</span> <span data-vi="Tiêu Thụ Hóa Chất & Sản Lượng" data-en="Chemical Consumption & Production">Tiêu Thụ Hóa Chất & Sản Lượng</span></div>
+    <div class="cf-bd">
+      <p style="font-size:11px;color:var(--gray);margin-bottom:10px" data-vi="Nhập lượng Mix KTA (kg) và sản lượng bia (hL) trong cùng khoảng thời gian → Định mức tự tính (kg/1000L)" data-en="Enter Mix KTA used (kg) and beer production (hL) for the same period → Norm calculated automatically (kg/1000L)">Nhập lượng Mix KTA (kg) và sản lượng bia (hL) trong cùng khoảng thời gian → Định mức tự tính (kg/1000L)</p>
+      <table class="ct" id="cons-table-main">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:14%;vertical-align:middle" data-vi="Dây chuyền" data-en="Line">Dây chuyền</th>
+            <th rowspan="2" style="background:var(--g5);width:11%;vertical-align:middle" data-vi="Từ ngày" data-en="From date">Từ ngày</th>
+            <th rowspan="2" style="background:var(--g5);width:11%;vertical-align:middle" data-vi="Đến ngày" data-en="To date">Đến ngày</th>
+            <th style="background:var(--g6)" data-vi="Lượng Mix KTA (kg)" data-en="Mix KTA used (kg)">Lượng Mix KTA (kg)</th>
+            <th style="background:var(--g8)" data-vi="Sản lượng bia (hL)" data-en="Beer production (hL)">Sản lượng bia (hL)</th>
+            <th rowspan="2" style="background:var(--blue);width:14%;vertical-align:middle" data-vi="Định mức (kg/1000L)" data-en="Norm (kg/1000L)">Định mức<br><small style="font-weight:400;opacity:.85">(kg/1000L)</small></th>
+            <th rowspan="2" style="background:var(--gray);width:28px;"></th>
+          </tr>
+        </thead>
+        <tbody id="cons-tbody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" style="padding:6px 8px;background:var(--g0)">
+              <button type="button" onclick="addConsRow()" style="background:var(--g6);color:#fff;border:none;border-radius:4px;padding:4px 12px;font-size:11.5px;font-weight:700;cursor:pointer">
+                + <span data-vi="Thêm dây chuyền" data-en="Add line">Thêm dây chuyền</span>
+              </button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- 8. NHẬN XÉT + CHỮ KÝ -->
+  <div class="cf">
+    <div class="cf-hd"><span class="sn">8</span> <span data-vi="Nhận Xét & Chữ Ký / Comments & Signatures" data-en="Comments & Signatures">Nhận Xét & Chữ Ký</span></div>
+    <div class="cf-bd">
+      <div class="g2" style="margin-bottom:12px">
+        <div class="fd"><label data-vi="Nhận xét / Comments" data-en="Comments">Nhận xét / Comments</label><textarea></textarea></div>
+        <div class="fd"><label data-vi="Đề xuất / Recommendations" data-en="Recommendations">Đề xuất / Recommendations</label><textarea></textarea></div>
+      </div>
+      <div class="sig">
+        <div class="sig-b">
+          <h4 data-vi="🔬 Xác nhận Kersia" data-en="🔬 Kersia Confirmation">🔬 Xác nhận Kersia</h4>
+          <div class="g2">
+            <div class="fd"><label data-vi="Họ tên / Name" data-en="Name">Họ tên</label><input type="text"></div>
+            <div class="fd"><label data-vi="Ngày / Date" data-en="Date">Ngày</label><input type="date"></div>
+          </div>
+          <div class="sig-line"></div><div class="sig-lbl">Chữ ký / Signature</div>
+        </div>
+        <div class="sig-b">
+          <h4 data-vi="🏭 Xác nhận Khách Hàng" data-en="🏭 Client Confirmation">🏭 Xác nhận Khách Hàng</h4>
+          <div class="g2">
+            <div class="fd"><label data-vi="Họ tên / Name" data-en="Name">Họ tên</label><input type="text"></div>
+            <div class="fd"><label data-vi="Ngày / Date" data-en="Date">Ngày</label><input type="date"></div>
+          </div>
+          <div class="sig-line"></div><div class="sig-lbl">Chữ ký / Signature</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end service -->
+
+</main>
+
+<script>
+// ===== LANGUAGE =====
+let currentLang = 'vi';
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-vi').classList.toggle('active', lang==='vi');
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-vi][data-en]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (!val) return;
+    // Don't overwrite inputs that have user data
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      if (!el.value) el.placeholder = val;
+    } else if (el.tagName === 'OPTION') {
+      el.textContent = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+}
+
+// ===== TABS =====
+function switchTab(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== CLEAR =====
+function clearForm(name) {
+  if(!confirm(currentLang==='vi'?'Xóa toàn bộ dữ liệu?':'Clear all data?')) return;
+  document.getElementById('page-'+name).querySelectorAll('input,textarea,select').forEach(el=>{
+    if(el.type==='radio'||el.type==='checkbox') el.checked=false;
+    else el.value='';
+  });
+}
+
+// ===== CONSUMPTION TABLE =====
+let consRowCount=0;
+function addConsRow() {
+  consRowCount++;
+  const id='cr'+consRowCount;
+  const tbody=document.getElementById('cons-tbody');
+  const tr=document.createElement('tr');
+  tr.id=id;
+  tr.innerHTML=`
+    <td style="background:var(--g0);padding:4px 6px"><input type="text" placeholder="${currentLang==='vi'?'Dây chuyền':'Line'}" style="font-size:11.5px;width:100%"></td>
+    <td style="padding:3px 4px"><input type="date" style="font-size:11px;width:100%"></td>
+    <td style="padding:3px 4px"><input type="date" style="font-size:11px;width:100%"></td>
+    <td style="padding:3px 4px"><input type="number" min="0" step="0.01" placeholder="kg" style="font-size:12px;width:100%;font-weight:600;color:var(--g7);text-align:center" oninput="calcDm('${id}')"></td>
+    <td style="padding:3px 4px"><input type="number" min="0" step="0.01" placeholder="hL" style="font-size:12px;width:100%;font-weight:600;color:var(--g8);text-align:center" oninput="calcDm('${id}')"></td>
+    <td id="${id}_r" class="dm-result">—</td>
+  `;
+  const tdDel=document.createElement('td');
+  tdDel.style.cssText='text-align:center;padding:3px;background:#fff8f8;width:28px';
+  tdDel.innerHTML=`<button type="button" onclick="document.getElementById('${id}').remove()" title="Remove" style="background:none;border:none;cursor:pointer;font-size:15px;color:#c0392b;line-height:1">✕</button>`;
+  tr.appendChild(tdDel);
+  tbody.appendChild(tr);
+}
+
+function calcDm(rowId) {
+  const tr=document.getElementById(rowId);
+  if(!tr) return;
+  const ins=tr.querySelectorAll('input[type=number]');
+  const kg=parseFloat(ins[0].value), hl=parseFloat(ins[1].value);
+  const cell=document.getElementById(rowId+'_r');
+  if(!isNaN(kg)&&!isNaN(hl)&&hl>0) {
+    const r=(kg/(hl*100))*1000;
+    cell.textContent=r.toFixed(4)+' kg/1000L';
+    cell.style.color=r>0.4?'#c0392b':(r<0.1?'#e67e22':'#145232');
+  } else {
+    cell.textContent='—';
+    cell.style.color='var(--blue)';
+  }
+}
+
+// Init 2 rows
+document.addEventListener('DOMContentLoaded',()=>{
+  addConsRow(); addConsRow();
+  const rows=document.querySelectorAll('#cons-tbody tr');
+  if(rows[0]) rows[0].querySelector('input[type=text]').value='Dây chuyền 1';
+  if(rows[1]) rows[1].querySelector('input[type=text]').value='Dây chuyền 2';
+});
+
+// ===== EXPORT PDF =====
+function exportPDF(name) {
+  const btn=event.currentTarget||event.target;
+  const origTxt=btn.innerHTML;
+  btn.innerHTML='⏳ Đang tạo PDF...';
+  btn.disabled=true;
+
+  const page=document.getElementById('page-'+name);
+  const title=name==='audit'?'Kersia_Audit':'Kersia_Service';
+
+  const clone=page.cloneNode(true);
+  clone.querySelector('.action-bar')?.remove();
+  clone.querySelector('.ptitle .badge')?.remove();
+
+  // Replace inputs with value spans
+  clone.querySelectorAll('input').forEach(inp=>{
+    if(inp.type==='radio'||inp.type==='checkbox'){
+      const s=document.createElement('span');
+      s.textContent=inp.checked?'☑':'☐';
+      s.style.cssText='font-size:12px';
+      inp.parentNode.replaceChild(s,inp);
+    } else {
+      const s=document.createElement('span');
+      s.textContent=inp.value||'';
+      s.style.cssText='display:inline-block;min-width:50px;border-bottom:1px solid #aaa;font-size:11px;color:#111';
+      inp.parentNode.replaceChild(s,inp);
+    }
+  });
+  clone.querySelectorAll('textarea').forEach(ta=>{
+    const d=document.createElement('div');
+    d.textContent=ta.value||'';
+    d.style.cssText='min-height:40px;border:1px solid #ccc;padding:4px 6px;font-size:11px;background:#f9fdf9';
+    ta.parentNode.replaceChild(d,ta);
+  });
+  clone.querySelectorAll('select').forEach(sel=>{
+    const s=document.createElement('span');
+    s.textContent=sel.options[sel.selectedIndex]?.text||'';
+    s.style.cssText='font-size:11px;font-weight:600';
+    sel.parentNode.replaceChild(s,sel);
+  });
+
+  const wrapper=document.createElement('div');
+  wrapper.style.cssText='font-family:Segoe UI,sans-serif;font-size:11px;color:#111;padding:0';
+  wrapper.innerHTML=`<div style="background:#0a3622;color:#fff;padding:10px 18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;border-radius:6px">
+    <div><div style="font-size:18px;font-weight:900;letter-spacing:2px">KERSIA</div><div style="font-size:9px;letter-spacing:3px;opacity:.8">SOUTH EAST ASIA</div></div>
+    <div style="text-align:right;font-size:11px;opacity:.9"><div style="font-size:13px;font-weight:700">${name==='audit'?'Bottle Washing Audit Form':'Bottle Washing Service Report'}</div><div>Date: ${new Date().toLocaleDateString('vi-VN')}</div></div>
+  </div>`;
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  html2pdf().set({
+    margin:[8,8,10,8],
+    filename:title+'_'+new Date().toISOString().slice(0,10)+'.pdf',
+    image:{type:'jpeg',quality:0.97},
+    html2canvas:{scale:2,useCORS:true,scrollY:0},
+    jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}
+  }).from(wrapper).save().then(()=>{
+    document.body.removeChild(wrapper);
+    btn.innerHTML='✅ PDF đã xuất!';
+    setTimeout(()=>{btn.innerHTML=origTxt;btn.disabled=false},2500);
+  }).catch(err=>{
+    document.body.removeChild(wrapper);
+    btn.innerHTML=origTxt; btn.disabled=false;
+    alert('Lỗi: '+err.message);
+  });
+}
+</script>
+</body>
+</html>
